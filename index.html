@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es-PY">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>H Arquitectura + Construcción — Construí la casa que imaginaste</title>
+<meta name="description" content="Te acompañamos desde las primeras decisiones hasta la ejecución de tu vivienda, ordenando todo el proceso para que avances con claridad y seguridad.">
+<!-- Preview para el cliente: quitar noindex al publicar en el dominio definitivo -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FAFAFA">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_PY">
+<meta property="og:site_name" content="H Arquitectura + Construcción">
+<meta property="og:title" content="¿Te gustaría construir la casa que imaginaste para tu familia?">
+<meta property="og:description" content="Te acompañamos desde las primeras decisiones hasta la ejecución de tu vivienda.">
+<meta property="og:image" content="assets/logo-v2-color-trim.png">
+
+<link rel="icon" type="image/png" href="assets/logo-v2-color-trim.png">
+<link rel="preload" href="assets/fonts/point-black.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/point-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+@font-face{font-family:'Point';src:url('assets/fonts/point-regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Point';src:url('assets/fonts/point-bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Point';src:url('assets/fonts/point-black.woff2') format('woff2');font-weight:900;font-style:normal;font-display:swap}
+
+:root{
+  --orange:#EA5B0C;
+  --dark:#3C3C3B;
+  --bg:#FAFAFA;
+  --body:#6e6b67;
+  --muted:#8d8a86;
+  --line:#e2dfda;
+  --col:560px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--dark);font-family:'Point',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+img,video{display:block}
+
+.wrap{max-width:var(--col);margin:0 auto}
+
+/* 1. Header */
+.site-header{background:var(--bg);border-bottom:1px solid var(--line)}
+.site-header .wrap{display:flex;align-items:center;justify-content:flex-start;padding:16px 20px}
+.logo{height:62px;width:50px;flex:0 0 auto;object-fit:contain}
+
+/* 2. Hero */
+.hero{padding:36px 24px 32px}
+.rule{width:44px;height:3px;background:var(--orange);margin-bottom:22px}
+h1{margin:0;font-size:29px;line-height:1.12;font-weight:900;letter-spacing:-0.01em;color:var(--dark);text-transform:uppercase;text-wrap:balance}
+.lead{margin:20px 0 0;font-size:16px;line-height:1.6;color:var(--body);text-wrap:pretty}
+.lead + .lead{margin-top:14px}
+
+/* 3. Video */
+.video{padding:0 24px}
+.player{position:relative;aspect-ratio:16/9;width:100%;background:var(--dark)}
+.player video{width:100%;height:100%;object-fit:cover;background:#000}
+.player-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background-color:var(--dark);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px)}
+.play{width:64px;height:64px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center}
+.play::after{content:"";width:0;height:0;border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
+.player-placeholder span{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+
+/* 4. CTA */
+.cta{padding:24px 24px 36px}
+.btn{display:block;text-align:center;text-decoration:none;background:var(--orange);color:#fff;padding:20px 18px;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:0;transition:background-color 160ms ease}
+.btn:hover,.btn:focus-visible{background:var(--dark);color:#fff}
+.btn:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.note{margin:14px 0 0;font-size:13px;line-height:1.55;color:var(--muted);text-align:center}
+
+@media (min-width:768px){
+  .hero{padding-top:56px}
+  .cta{padding-bottom:64px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <img class="logo" src="assets/logo-v2-color-trim.png" alt="H Arquitectura + Construcción" width="50" height="62">
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="rule" aria-hidden="true"></div>
+    <h1>¿Te gustaría construir la casa que imaginaste para tu familia, pero no sabés por dónde empezar?</h1>
+    <p class="lead">En H Arquitectura + Construcción te acompañamos desde las primeras decisiones hasta la ejecución de tu vivienda, ordenando todo el proceso para que puedas avanzar con mayor claridad y seguridad.</p>
+    <p class="lead">Mirá este video para conocer cómo trabajamos y cómo transformamos una idea en un lugar pensado para vivir, crecer y compartir en familia.</p>
+  </section>
+
+  <section class="video" aria-label="Video de presentación">
+    <div class="player" id="player">
+      <div class="player-placeholder" aria-hidden="true">
+        <div class="play"></div>
+        <span>video-presentacion.mp4</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <a class="btn" id="cta-main" href="#" target="_blank" rel="noopener" data-cta="post-video">Solicitar mi reunión</a>
+    <p class="note">Al hacer clic, vas a acceder a un breve formulario que nos permitirá conocer tu proyecto antes de coordinar la reunión.</p>
+  </section>
+</main>
+
+<script>
+/* ===== Configuración — completar con lo que envíe el cliente ===== */
+var CONFIG = {
+  formUrl:     '',   // URL del formulario externo
+  videoSrc:    '',   // p.ej. 'assets/video-presentacion.mp4'
+  videoPoster: ''    // p.ej. 'assets/video-poster.jpg'
+};
+/* ================================================================= */
+
+(function () {
+  // Analytics: envía a GA4 (gtag) y/o Meta Pixel (fbq) si están cargados.
+  function track(name, params) {
+    params = params || {};
+    if (window.gtag) window.gtag('event', name, params);
+    if (window.fbq) window.fbq('trackCustom', name, params);
+    if (window.dataLayer) window.dataLayer.push(Object.assign({ event: name }, params));
+  }
+
+  // CTAs
+  document.querySelectorAll('[data-cta]').forEach(function (a) {
+    if (CONFIG.formUrl) a.href = CONFIG.formUrl;
+    a.addEventListener('click', function (e) {
+      if (!CONFIG.formUrl) e.preventDefault();
+      track('cta_click', { position: a.dataset.cta });
+    });
+  });
+
+  // Video
+  if (CONFIG.videoSrc) {
+    var player = document.getElementById('player');
+    var v = document.createElement('video');
+    v.controls = true;
+    v.playsInline = true;
+    v.preload = 'metadata';
+    if (CONFIG.videoPoster) v.poster = CONFIG.videoPoster;
+    v.src = CONFIG.videoSrc;
+    player.innerHTML = '';
+    player.appendChild(v);
+
+    var started = false, marks = [25, 50, 75, 100], sent = {};
+    v.addEventListener('play', function () {
+      if (!started) { started = true; track('video_play'); }
+    });
+    v.addEventListener('timeupdate', function () {
+      if (!v.duration) return;
+      var pct = (v.currentTime / v.duration) * 100;
+      marks.forEach(function (m) {
+        if (pct >= m - 0.5 && !sent[m]) { sent[m] = true; track('video_progress', { percent: m }); }
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
