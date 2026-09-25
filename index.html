@@ -63,13 +63,16 @@ h1{margin:0;font-size:29px;line-height:1.12;font-weight:900;letter-spacing:-0.01
 .player-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background-color:var(--dark);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px)}
 .player-placeholder span{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 /* Portada: se reemplaza por el reproductor al tocar play */
-.player-cover{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background-color:var(--dark);background-position:center;background-size:cover;background-repeat:no-repeat;display:flex;align-items:center;justify-content:center;font:inherit}
-.player-cover::before{content:"";position:absolute;inset:0;background:rgba(44,44,43,.28);transition:background-color 160ms ease}
-.player-cover:hover::before,.player-cover:focus-visible::before{background:rgba(44,44,43,.12)}
+.player-cover{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background-color:var(--dark);background-position:center;background-size:cover;background-repeat:no-repeat;display:block;font:inherit;text-align:left}
+.player-cover::before{content:"";position:absolute;left:0;right:0;bottom:0;height:55%;background:linear-gradient(to top,rgba(44,44,43,.78),rgba(44,44,43,0))}
 .player-cover:focus-visible{outline:3px solid var(--orange);outline-offset:-3px}
-.play{position:relative;width:64px;height:64px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;transition:transform 160ms ease}
-.player-cover:hover .play{transform:scale(1.06)}
-.play::after{content:"";width:0;height:0;border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
+.cover-bar{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(44,44,43,.92);transition:background-color 160ms ease}
+.player-cover:hover .cover-bar,.player-cover:focus-visible .cover-bar{background:var(--dark)}
+.cover-bar .play{flex:0 0 auto;width:34px;height:34px;background:var(--orange);display:flex;align-items:center;justify-content:center;transition:transform 160ms ease}
+.player-cover:hover .play{transform:scale(1.08)}
+.play::after{content:"";width:0;height:0;border-left:12px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}
+.cover-bar b{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#fff}
+.cover-bar em{font-style:normal;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#a8a5a1;margin-left:auto}
 
 /* 4. CTA */
 .cta{padding:24px 24px 36px}
@@ -125,7 +128,8 @@ var CONFIG = {
   formUrl:     'https://docs.google.com/forms/d/e/1FAIpQLSeQ0g8FbdPvv8ORe3mzi04c8t0uHLtPItyC-iXGcab9JNJB4Q/viewform',
   youtubeId:   '',
   videoSrc:    'assets/video-presentacion.mp4',
-  videoPoster: 'assets/video-poster.jpg'
+  videoPoster: 'assets/video-poster.jpg',
+  videoDuration: '7 MIN'   // texto que se muestra en la barra de la portada
 };
 /* ================================================================== */
 
@@ -158,9 +162,10 @@ var CONFIG = {
   var cover = document.createElement('button');
   cover.type = 'button';
   cover.className = 'player-cover';
-  cover.setAttribute('aria-label', 'Reproducir el video de presentación');
+  cover.setAttribute('aria-label', 'Ver el video de presentación, dura ' + CONFIG.videoDuration);
   if (poster) cover.style.backgroundImage = 'url("' + poster + '")';
-  cover.innerHTML = '<span class="play" aria-hidden="true"></span>';
+  cover.innerHTML = '<span class="cover-bar"><span class="play" aria-hidden="true"></span>' +
+                    '<b>Ver el video</b><em>' + CONFIG.videoDuration + '</em></span>';
   player.innerHTML = '';
   player.appendChild(cover);
 
