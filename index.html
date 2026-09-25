@@ -57,12 +57,19 @@ h1{margin:0;font-size:29px;line-height:1.12;font-weight:900;letter-spacing:-0.01
 
 /* 3. Video */
 .video{padding:0 24px}
-.player{position:relative;aspect-ratio:16/9;width:100%;background:var(--dark)}
-.player video{width:100%;height:100%;object-fit:cover;background:#000}
+.player{position:relative;aspect-ratio:16/9;width:100%;background:var(--dark);overflow:hidden}
+.player video,.player iframe{width:100%;height:100%;border:0;display:block;background:#000}
+.player video{object-fit:contain}
 .player-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background-color:var(--dark);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px)}
-.play{width:64px;height:64px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center}
-.play::after{content:"";width:0;height:0;border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
 .player-placeholder span{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+/* Portada: se reemplaza por el reproductor al tocar play */
+.player-cover{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background-color:var(--dark);background-position:center;background-size:cover;background-repeat:no-repeat;display:flex;align-items:center;justify-content:center;font:inherit}
+.player-cover::before{content:"";position:absolute;inset:0;background:rgba(44,44,43,.28);transition:background-color 160ms ease}
+.player-cover:hover::before,.player-cover:focus-visible::before{background:rgba(44,44,43,.12)}
+.player-cover:focus-visible{outline:3px solid var(--orange);outline-offset:-3px}
+.play{position:relative;width:64px;height:64px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;transition:transform 160ms ease}
+.player-cover:hover .play{transform:scale(1.06)}
+.play::after{content:"";width:0;height:0;border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:5px}
 
 /* 4. CTA */
 .cta{padding:24px 24px 36px}
@@ -109,13 +116,18 @@ h1{margin:0;font-size:29px;line-height:1.12;font-weight:900;letter-spacing:-0.01
 </main>
 
 <script>
-/* ===== Configuración — completar con lo que envíe el cliente ===== */
+/* ===== Configuración ===============================================
+   Cuando el video esté en YouTube: pegar el ID en youtubeId (lo que va
+   después de "v=" en la URL). Con youtubeId cargado, se usa YouTube y
+   se ignora videoSrc; el MP4 puede quedar como respaldo.
+   ================================================================== */
 var CONFIG = {
-  formUrl:     '',   // URL del formulario externo
-  videoSrc:    '',   // p.ej. 'assets/video-presentacion.mp4'
-  videoPoster: ''    // p.ej. 'assets/video-poster.jpg'
+  formUrl:     'https://docs.google.com/forms/d/e/1FAIpQLSeQ0g8FbdPvv8ORe3mzi04c8t0uHLtPItyC-iXGcab9JNJB4Q/viewform',
+  youtubeId:   '',
+  videoSrc:    'assets/video-presentacion.mp4',
+  videoPoster: 'assets/video-poster.jpg'
 };
-/* ================================================================= */
+/* ================================================================== */
 
 (function () {
   // Analytics: envía a GA4 (gtag) y/o Meta Pixel (fbq) si están cargados.
@@ -135,22 +147,51 @@ var CONFIG = {
     });
   });
 
-  // Video
-  if (CONFIG.videoSrc) {
-    var player = document.getElementById('player');
+  // Video: portada liviana; el reproductor se carga recién al tocar play.
+  var player = document.getElementById('player');
+  var hasVideo = CONFIG.youtubeId || CONFIG.videoSrc;
+  if (!player || !hasVideo) return;
+
+  var poster = CONFIG.videoPoster ||
+    (CONFIG.youtubeId ? 'https://i.ytimg.com/vi/' + CONFIG.youtubeId + '/maxresdefault.jpg' : '');
+
+  var cover = document.createElement('button');
+  cover.type = 'button';
+  cover.className = 'player-cover';
+  cover.setAttribute('aria-label', 'Reproducir el video de presentación');
+  if (poster) cover.style.backgroundImage = 'url("' + poster + '")';
+  cover.innerHTML = '<span class="play" aria-hidden="true"></span>';
+  player.innerHTML = '';
+  player.appendChild(cover);
+
+  cover.addEventListener('click', function () {
+    track('video_play');
+
+    if (CONFIG.youtubeId) {
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + CONFIG.youtubeId +
+                   '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+      iframe.title = 'Video de presentación — H Arquitectura + Construcción';
+      iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      player.innerHTML = '';
+      player.appendChild(iframe);
+      return;
+    }
+
     var v = document.createElement('video');
     v.controls = true;
     v.playsInline = true;
-    v.preload = 'metadata';
-    if (CONFIG.videoPoster) v.poster = CONFIG.videoPoster;
+    v.autoplay = true;
+    v.preload = 'auto';
+    if (poster) v.poster = poster;
     v.src = CONFIG.videoSrc;
     player.innerHTML = '';
     player.appendChild(v);
+    v.play().catch(function () { /* si el navegador bloquea el autoplay, quedan los controles */ });
 
-    var started = false, marks = [25, 50, 75, 100], sent = {};
-    v.addEventListener('play', function () {
-      if (!started) { started = true; track('video_play'); }
-    });
+    // Progreso 25/50/75/100%
+    var marks = [25, 50, 75, 100], sent = {};
     v.addEventListener('timeupdate', function () {
       if (!v.duration) return;
       var pct = (v.currentTime / v.duration) * 100;
@@ -158,7 +199,7 @@ var CONFIG = {
         if (pct >= m - 0.5 && !sent[m]) { sent[m] = true; track('video_progress', { percent: m }); }
       });
     });
-  }
+  });
 })();
 </script>
 </body>
