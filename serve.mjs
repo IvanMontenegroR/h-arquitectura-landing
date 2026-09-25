@@ -12,18 +12,21 @@ createServer((req, res) => {
   const url = decodeURIComponent(req.url.split('?')[0]);
   const file = join(root, normalize(url === '/' ? '/index.html' : url));
   if (!file.startsWith(root)) { res.writeHead(403).end(); return; }
-  let st;
-  try { st = statSync(file); } catch { res.writeHead(404).end('not found'); return; }
-  const type = types[extname(file)] || 'application/octet-stream';
+  let st, target = file;
+  try {
+    st = statSync(target);
+    if (st.isDirectory()) { target = join(target, 'index.html'); st = statSync(target); }
+  } catch { res.writeHead(404).end('not found'); return; }
+  const type = types[extname(target)] || 'application/octet-stream';
   const range = req.headers.range;
   if (range) {
     const [s, e] = range.replace('bytes=', '').split('-');
     const start = Number(s), end = e ? Number(e) : st.size - 1;
     res.writeHead(206, { 'Content-Type': type, 'Accept-Ranges': 'bytes',
       'Content-Range': `bytes ${start}-${end}/${st.size}`, 'Content-Length': end - start + 1 });
-    createReadStream(file, { start, end }).pipe(res);
+    createReadStream(target, { start, end }).pipe(res);
   } else {
     res.writeHead(200, { 'Content-Type': type, 'Content-Length': st.size, 'Accept-Ranges': 'bytes' });
-    createReadStream(file).pipe(res);
+    createReadStream(target).pipe(res);
   }
-}).listen(port, () => console.log('http://localhost:' + port));
+}).on('clientError', (e, sock) => sock.destroy()).listen(port, () => console.log('http://localhost:' + port));
