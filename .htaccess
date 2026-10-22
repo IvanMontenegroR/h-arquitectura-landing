@@ -1,0 +1,37 @@
+# H Arquitectura + Construcción — landing (HostGator / Apache)
+
+# --- HTTPS -------------------------------------------------------------
+# Se excluye /.well-known/ para que AutoSSL de cPanel pueda renovar el certificado.
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# --- Tipos -------------------------------------------------------------
+AddType font/woff2 .woff2
+AddType video/mp4 .mp4
+
+# --- Compresión --------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml
+</IfModule>
+
+# --- Caché -------------------------------------------------------------
+# El HTML se revalida siempre: cada cambio que publiquemos se ve al instante.
+# Fuentes, imágenes y video se guardan en el navegador.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html  "access plus 0 seconds"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/png  "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType video/mp4  "access plus 1 month"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.html?$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+# --- Varios ------------------------------------------------------------
+Options -Indexes
